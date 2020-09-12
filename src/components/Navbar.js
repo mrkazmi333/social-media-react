@@ -1,70 +1,91 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { logoutUser } from '../actions/auth';
 
-function Navbar(props) {
-  return (
-    <nav className="nav">
-      <div className="left-div">
-        <Link to="/">
+class Navbar extends React.Component {
+  logOut = () => {
+    localStorage.removeItem('token');
+    this.props.dispatch(logoutUser());
+  };
+
+  render() {
+    const { auth } = this.props;
+    // console.log('auth', auth);
+    return (
+      <nav className="nav">
+        <div className="left-div">
+          <Link to="/">
+            <img
+              src="https://www.flaticon.com/svg/static/icons/svg/3449/3449702.png"
+              alt="logo"
+            />
+          </Link>
+        </div>
+        <div className="search-container">
           <img
-            src="https://www.flaticon.com/svg/static/icons/svg/3449/3449702.png"
-            alt="logo"
+            className="search-icon"
+            src="https://www.flaticon.com/svg/static/icons/svg/1007/1007692.svg"
+            alt="search-icon"
           />
-        </Link>
-      </div>
-      <div className="search-container">
-        <img
-          className="search-icon"
-          src="https://www.flaticon.com/svg/static/icons/svg/1007/1007692.svg"
-          alt="search-icon"
-        />
-        <input placeholder="Search" />
-        <div className="search-results">
-          <ul>
-            <li className="search-results-row">
+          <input placeholder="Search" />
+          <div className="search-results">
+            <ul>
+              <li className="search-results-row">
+                <img
+                  src="https://www.flaticon.com/svg/static/icons/svg/560/560216.svg"
+                  alt="user avatar"
+                />
+                <span>John Doe</span>
+              </li>
+              <li className="search-results-row">
+                <img
+                  src="https://www.flaticon.com/svg/static/icons/svg/560/560216.svg"
+                  alt="user avatar"
+                />
+                <span>John Doe</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="right-nav">
+          {auth.isLoggedIn && (
+            <div className="user">
               <img
                 src="https://www.flaticon.com/svg/static/icons/svg/560/560216.svg"
-                alt="user avatar"
+                alt="user-dp"
+                id="user-dp"
               />
-              <span>John Doe</span>
-            </li>
-            <li className="search-results-row">
-              <img
-                src="https://www.flaticon.com/svg/static/icons/svg/560/560216.svg"
-                alt="user avatar"
-              />
-              <span>John Doe</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div className="right-nav">
-        <div className="user">
-          <img
-            src="https://www.flaticon.com/svg/static/icons/svg/560/560216.svg"
-            alt="user-dp"
-            id="user-dp"
-          />
-          <span>John Doe</span>
-        </div>
-        <div className="nav-links">
-          <ul>
-            <li>
-              <Link to="/login">Log In</Link>
-            </li>
+              <span>{auth.user.name}</span>
+            </div>
+          )}
 
-            <li>
-              <Link to="/logout">Log Out</Link>
-            </li>
+          <div className="nav-links">
+            <ul>
+              {!auth.isLoggedIn && (
+                <li>
+                  <Link to="/login">Log In</Link>
+                </li>
+              )}
 
-            <li>
-              <Link to="/singup">Register</Link>
-            </li>
-          </ul>
+              {auth.isLoggedIn && <li onClick={this.logOut}>Log Out</li>}
+
+              {!auth.isLoggedIn && (
+                <li>
+                  <Link to="/signup">Register</Link>
+                </li>
+              )}
+            </ul>
+          </div>
         </div>
-      </div>
-    </nav>
-  );
+      </nav>
+    );
+  }
 }
 
-export default Navbar;
+function mapStateToProps(state) {
+  return {
+    auth: state.auth,
+  };
+}
+export default connect(mapStateToProps)(Navbar);
