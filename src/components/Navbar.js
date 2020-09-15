@@ -42,7 +42,10 @@ class Navbar extends React.Component {
               <ul>
                 {results.map((user) => (
                   <li className="search-results-row" key={user._id}>
-                    <Link to={`/user/${user._id}`}>
+                    <Link
+                      to={`/user/${user._id}`}
+                      onClick={this.closeSearchBox}
+                    >
                       <img
                         src="https://www.flaticon.com/svg/static/icons/svg/560/560216.svg"
                         alt="user avatar"
